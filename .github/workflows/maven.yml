@@ -10,7 +10,7 @@ on:
     branches: [ master ]
 
 jobs:
-  ugoku...?:
+  ugoku????:
 
    runs-on: macos-latest
 
