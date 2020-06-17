@@ -12,11 +12,7 @@ public class LoggerChanger
         {
             Field f = target.getClass().getDeclaredField(field);
 
-            Field mod = Field.class.getDeclaredField("modifiers");
-
-            mod.setAccessible(true);
-
-            mod.setInt(f, f.getModifiers() & ~ Modifier.PRIVATE & ~ Modifier.FINAL);
+            f.setAccessible(true);
 
             f.set(target, dummyLogger);
 
