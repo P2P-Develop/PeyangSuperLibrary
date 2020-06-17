@@ -18,7 +18,7 @@ public class LoggerChanger
 
             mod.setInt(f, f.getModifiers() & ~ Modifier.PRIVATE & ~ Modifier.FINAL);
 
-            f.set(null, dummyLogger);
+            f.set(target, dummyLogger);
 
             return true;
         }
