@@ -10,7 +10,7 @@ on:
     branches: [ master ]
 
 jobs:
-  ugoku????:
+  ugoku-or-not:
 
    runs-on: macos-latest
 
@@ -23,7 +23,7 @@ jobs:
    - name: Build with Maven
      run: mvn -B package --file pom.xml
 
-  ugoku?:
+  ugokanai-or-not:
 
     runs-on: ubuntu-latest
 
