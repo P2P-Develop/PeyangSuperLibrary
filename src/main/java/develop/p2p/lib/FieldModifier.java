@@ -16,7 +16,7 @@ public class FieldModifier
             modifiersField.setAccessible(true);
             modifiersField.setInt(f,
                     f.getModifiers() & ~Modifier.PRIVATE & ~Modifier.FINAL & ~Modifier.STATIC);
-            f.set(field, dummy);
+            f.set(target, dummy);
 
             return true;
         }
