@@ -2,6 +2,7 @@ package develop.p2p.lib;
 
 import java.util.Arrays;
 
+// Neural network functions by Potato1682
 public class LearnMath
 {
     // Sigmoid function
