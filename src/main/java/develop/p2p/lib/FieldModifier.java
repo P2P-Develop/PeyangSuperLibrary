@@ -1,7 +1,5 @@
 package develop.p2p.lib;
 
-import org.slf4j.*;
-
 import java.lang.reflect.*;
 
 public class FieldModifier
