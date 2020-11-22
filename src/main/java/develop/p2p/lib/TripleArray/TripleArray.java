@@ -1,5 +1,7 @@
 package develop.p2p.lib.TripleArray;
 
+import sun.java2d.cmm.kcms.KcmsServiceProvider;
+
 import java.util.*;
 
 public class TripleArray<L, M, R>
@@ -42,6 +44,6 @@ public class TripleArray<L, M, R>
         if (this.left.size() < index)
             return null;
 
-        return new Value(this.left.get(index), this.middle.get(index), this.right.get(index));
+        return new Value<L, M, R>(this.left.get(index), this.middle.get(index), this.right.get(index));
     }
 }
