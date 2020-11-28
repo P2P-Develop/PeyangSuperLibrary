@@ -86,14 +86,14 @@ public class FileConfiguration
 
     public String getString(String key)
     {
-        return (String) get(key);
+        return get(key);
     }
 
     private void copyFromInJar(String name)
     {
         try
         {
-            Path to = Paths.get("./" + name);
+            Path to = cfg.toPath();
             Files.copy(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(name)), to);
         }
         catch (Exception e)
