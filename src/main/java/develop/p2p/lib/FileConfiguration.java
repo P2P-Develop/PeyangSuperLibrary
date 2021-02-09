@@ -12,10 +12,10 @@ public class FileConfiguration
     private Map<String, Object> config = null;
     private final String fileStr;
 
-    public FileConfiguration(String name)
+    public FileConfiguration(File parent, String name)
     {
         this.fileStr = name;
-        this.cfg = new File("./" + name);
+        this.cfg = new File(parent, name);
     }
 
     public void saveDefaultConfig()
