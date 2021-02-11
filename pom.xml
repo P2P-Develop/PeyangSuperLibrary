@@ -6,7 +6,7 @@
 
     <groupId>develop.p2p.lib</groupId>
     <artifactId>PeyangSuperLibrary</artifactId>
-    <version>11.45148.10</version>
+    <version>114.5.1.4.8.1.0</version>
 
     <build>
         <plugins>
