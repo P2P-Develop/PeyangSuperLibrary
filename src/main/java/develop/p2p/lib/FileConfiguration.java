@@ -6,18 +6,29 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+/**
+ * ファイルコンフィグ
+ */
 public class FileConfiguration
 {
     private final File cfg;
     private Map<String, Object> config = null;
     private final String fileStr;
 
+    /**
+     * コンストラクタ。
+     * @param parent ディレクトリ
+     * @param name ファイル名
+     */
     public FileConfiguration(File parent, String name)
     {
         this.fileStr = name;
         this.cfg = new File(parent, name);
     }
 
+    /**
+     * jarファイル内のconfig.ymlを保存
+     */
     public void saveDefaultConfig()
     {
         if (cfg.exists())
@@ -25,11 +36,17 @@ public class FileConfiguration
         copyFromInJar(fileStr);
     }
 
+    /**
+     * configを読み込む
+     */
     public void loadConfig()
     {
         reloadConfig();
     }
 
+    /**
+     * 再読み込み
+     */
     public void reloadConfig()
     {
         try (InputStream stream = new FileInputStream(cfg);
@@ -44,6 +61,10 @@ public class FileConfiguration
         }
     }
 
+    /**
+     * configをmapで取得。
+     * @return map
+     */
     public Map<String, Object> getConfig()
     {
         if (config == null)
@@ -52,6 +73,12 @@ public class FileConfiguration
         return this.config;
     }
 
+    /**
+     * configを得る。
+     * キーは"."で区切る。
+     * @param key キー
+     * @return 結果 またはnull
+     */
     @SuppressWarnings("unchecked")
     public <T> T get(String key)
     {
@@ -84,6 +111,11 @@ public class FileConfiguration
         return null;
     }
 
+    /**
+     * stringでget
+     * @param key
+     * @return
+     */
     public String getString(String key)
     {
         return get(key);

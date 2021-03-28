@@ -2,6 +2,9 @@ package develop.p2p.lib;
 
 import org.slf4j.*;
 
+/**
+ * ダミーのロガー。特に使わない
+ */
 class DummyLogger implements Logger
 {
     @Override

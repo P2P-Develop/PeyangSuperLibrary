@@ -1,7 +1,14 @@
 package develop.p2p.lib;
 
+/**
+ * Intellijのユーティリティ
+ */
 public class Intellij
 {
+    /**
+     * デバッグ中かどうか
+     * @return 合否
+     */
     public static boolean isDebugging()
     {
         try

@@ -8,14 +8,23 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * SQLのUtil
+ */
 public class SQLModifier
 {
+    /**
+     * インサート
+     * @param connection SQLコネクション
+     * @param database データベース名
+     * @param value 値
+     * @throws SQLException エラー
+     */
     public static void insert(Connection connection, String database, Object... value) throws SQLException
     {
         StringBuilder p = new StringBuilder();
 
         Arrays.stream(value)
-                .parallel()
                 .forEach(s -> {
                     if (!p.toString().isEmpty())
                         p.append(", ");
@@ -45,12 +54,18 @@ public class SQLModifier
         }
     }
 
+    /**
+     * 削除
+     * @param connection コネクション
+     * @param database データベース名
+     * @param map 条件
+     * @throws SQLException エラー
+     */
     public static void delete(Connection connection, String database, HashMap<String, ?> map) throws SQLException
     {
         StringBuilder p = new StringBuilder();
 
         map.keySet()
-                .parallelStream()
                 .forEach(s -> {
                     if (!p.toString().isEmpty())
                         p.append(", ");
@@ -81,6 +96,13 @@ public class SQLModifier
         }
     }
 
+    /**
+     * 実行
+     * @param connection コネクション
+     * @param sql SQL文
+     * @param values 値
+     * @throws SQLException エラー
+     */
     public static void exec(Connection connection, String sql, Object... values) throws SQLException
     {
         try (PreparedStatement statement = connection.prepareStatement(sql))

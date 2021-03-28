@@ -2,9 +2,19 @@ package develop.p2p.lib;
 
 import java.lang.reflect.*;
 
+/**
+ * フィールドのUtil.
+ */
 public class FieldModifier
 {
-    public static  <T, K> boolean modify(T target, String field, K dummy)
+    /**
+     * フィールドをModify
+     * @param target ターゲットのインスタンス
+     * @param field フィールド名
+     * @param dummy ぶち込むやつ
+     * @return 成功したかどうか
+     */
+    public static <T, K> boolean modify(T target, String field, K dummy)
     {
         try
         {
@@ -24,7 +34,12 @@ public class FieldModifier
         }
     }
 
-
+    /**
+     * 黒魔術でModifyする。
+     * @param clazz クラス
+     * @param field フィールド名
+     * @param as ぶち込むやつ
+     */
     public static <T> void modifyAsGod(Class<?> clazz, String field, T as)
     {
         try

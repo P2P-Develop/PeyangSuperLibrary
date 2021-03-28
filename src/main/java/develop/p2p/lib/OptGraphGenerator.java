@@ -1,8 +1,16 @@
 package develop.p2p.lib;
 
-
+/**
+ * グラフ
+ */
 public class OptGraphGenerator
 {
+    /**
+     * グラフを計算
+     * @param VL VL
+     * @param max 最大値
+     * @return グラフの値
+     */
     private static int calcVLGraph(int VL, int max)
     {
         double tendNum = 10.0 / (double) max;
@@ -12,6 +20,16 @@ public class OptGraphGenerator
         return Math.toIntExact(Math.round(VlMeta));
     }
 
+    /**
+     * グラフをつくる。String
+     * @param VL VL
+     * @param max 最大値
+     * @param materChar 区切り
+     * @param lowChar 最初
+     * @param mediumChar 真ん中
+     * @param highChar 最後
+     * @return グラフ
+     */
     static String genGraph(int VL, int max, String materChar, String lowChar, String mediumChar, String highChar)
     {
         int genVL = calcVLGraph(VL, max);

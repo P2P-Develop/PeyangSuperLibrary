@@ -2,9 +2,17 @@ package develop.p2p.lib;
 
 import java.util.*;
 
+/**
+ * Leet
+ */
 public class LeetConverter
 {
 
+    /**
+     * Leetにする
+     * @param str 対象
+     * @return leet
+     */
     public static String convert(String str)
     {
         String target = str;
