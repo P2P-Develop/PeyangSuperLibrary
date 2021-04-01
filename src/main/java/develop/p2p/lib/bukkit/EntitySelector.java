@@ -54,12 +54,12 @@ public class EntitySelector
         usableArgs = new String[]{"x", "y", "z", "r", "rm", "dx", "dy", "dz", "tag", "team", "c", "l", "lm", "m", "name", "rx", "rxm", "ry", "rym", "type"};
     }
 
-    public static Player matchOnePlayer(CommandSender sender,  String token) throws SelectorException
+    public static Player matchOnePlayer(CommandSender sender,  String token) throws SelectorInvalidException, SelectorMalformedException
     {
         return (Player) matchOneEntity(sender, token, Player.class);
     }
 
-    public static Entity matchOneEntity(CommandSender sender, String token, Class<? extends Entity> clazz) throws SelectorException
+    public static Entity matchOneEntity(CommandSender sender, String token, Class<? extends Entity> clazz) throws SelectorInvalidException, SelectorMalformedException
     {
         List<Entity> selectedEntities = matchEntities(sender, token, clazz);
         return selectedEntities.size() == 1 ? selectedEntities.get(0): null;
@@ -68,9 +68,10 @@ public class EntitySelector
     /**
      * セレクタがあってるか検証
      * @param selector セレクタ
-     * @throws SelectorException セレクタがおかしかった問題
+     * @throws  SelectorInvalidException 変なセレクタが紛れ込んでる問題
+     * @throws  SelectorMalformedException セレクタがセレクタとして成立してない問題
      */
-    public static void validateSelector(String selector) throws SelectorException
+    public static void validateSelector(String selector) throws SelectorInvalidException, SelectorMalformedException
     {
         Matcher tokenMatcher = tokenPattern.matcher(selector);
         if (!tokenMatcher.matches())
@@ -107,7 +108,7 @@ public class EntitySelector
         return tokenPattern.matcher(token).matches();
     }
 
-    public static List<Entity> matchEntities(CommandSender sender,  String token, Class<? extends Entity> clazz) throws SelectorException
+    public static List<Entity> matchEntities(CommandSender sender,  String token, Class<? extends Entity> clazz) throws SelectorInvalidException, SelectorMalformedException
     {
         validateSelector(token);
 
