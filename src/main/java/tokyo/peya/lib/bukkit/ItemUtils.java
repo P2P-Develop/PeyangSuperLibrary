@@ -1,4 +1,4 @@
-package develop.p2p.lib.bukkit;
+package tokyo.peya.lib.bukkit;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

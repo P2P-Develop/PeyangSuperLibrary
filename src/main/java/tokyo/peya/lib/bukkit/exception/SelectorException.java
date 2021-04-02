@@ -1,4 +1,4 @@
-package develop.p2p.lib.bukkit.exception;
+package tokyo.peya.lib.bukkit.exception;
 
 /**
  * 無効なセレクタの例外

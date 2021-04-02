@@ -1,4 +1,4 @@
-package develop.p2p.lib;
+package tokyo.peya.lib;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

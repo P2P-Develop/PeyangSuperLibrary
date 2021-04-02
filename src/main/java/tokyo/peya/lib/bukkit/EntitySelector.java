@@ -1,10 +1,10 @@
-package develop.p2p.lib.bukkit;
+package tokyo.peya.lib.bukkit;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ComparisonChain;
-import develop.p2p.lib.bukkit.exception.SelectorInvalidException;
-import develop.p2p.lib.bukkit.exception.SelectorMalformedException;
+import tokyo.peya.lib.bukkit.exception.SelectorInvalidException;
+import tokyo.peya.lib.bukkit.exception.SelectorMalformedException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
