@@ -4,6 +4,7 @@ on:
     push:
         branches: [master]
         paths: [src/main/java/**]
+    workflow_dispatch:
 
 jobs:
     gen-javadoc:
