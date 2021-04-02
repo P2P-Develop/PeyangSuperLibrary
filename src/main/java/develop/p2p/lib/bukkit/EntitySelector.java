@@ -3,7 +3,6 @@ package develop.p2p.lib.bukkit;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ComparisonChain;
-import develop.p2p.lib.bukkit.exception.SelectorException;
 import develop.p2p.lib.bukkit.exception.SelectorInvalidException;
 import develop.p2p.lib.bukkit.exception.SelectorMalformedException;
 import org.bukkit.Bukkit;
@@ -53,15 +52,9 @@ public class EntitySelector
         worldBindingArgs = new String[]{"x", "y", "z", "dx", "dy", "dz", "rm", "r"};
         usableArgs = new String[]{"x", "y", "z", "r", "rm", "dx", "dy", "dz", "tag", "team", "c", "l", "lm", "m", "name", "rx", "rxm", "ry", "rym", "type"};
     }
-
-    public static Player matchOnePlayer(CommandSender sender,  String token) throws SelectorInvalidException, SelectorMalformedException
+    public static Entity matchOneEntity(CommandSender sender, String token) throws SelectorInvalidException, SelectorMalformedException
     {
-        return (Player) matchOneEntity(sender, token, Player.class);
-    }
-
-    public static Entity matchOneEntity(CommandSender sender, String token, Class<? extends Entity> clazz) throws SelectorInvalidException, SelectorMalformedException
-    {
-        List<Entity> selectedEntities = matchEntities(sender, token, clazz);
+        List<Entity> selectedEntities = matchEntities(sender, token, true);
         return selectedEntities.size() == 1 ? selectedEntities.get(0): null;
     }
 
@@ -71,28 +64,64 @@ public class EntitySelector
      * @throws  SelectorInvalidException 変なセレクタが紛れ込んでる問題
      * @throws  SelectorMalformedException セレクタがセレクタとして成立してない問題
      */
-    public static void validateSelector(String selector) throws SelectorInvalidException, SelectorMalformedException
+    public static void validateSelector(String selector, boolean strict) throws SelectorInvalidException, SelectorMalformedException
     {
         Matcher tokenMatcher = tokenPattern.matcher(selector);
         if (!tokenMatcher.matches())
             throw new SelectorMalformedException();
 
         Map<String, String> keyMap = getArgumentMap(tokenMatcher.group(2));
-        keyMap = pickUpInvalidArgs(keyMap);
+        keyMap = pickUpInvalidArgs(keyMap, strict);
 
         if (keyMap.size() != 0)
             throw new SelectorInvalidException(keyMap);
     }
 
 
-    private static Map<String, String> pickUpInvalidArgs(Map<String, String> keyMap)
+    private static Map<String, String> pickUpInvalidArgs(Map<String, String> keyMap, boolean strict)
     {
         Map<String, String> result = new HashMap<>();
 
         keyMap.entrySet().stream().parallel().filter(ent -> {
             for (String key: usableArgs)
                 if (ent.getKey().equals(key))
+                {
+                    switch (key)
+                    {
+                        case "type":
+                            if (strict && !isEntityTypeValid(ent.getValue()))
+                                return true;
+                            else if (!strict)
+                                return false;
+                            break;
+                        case "x":
+                        case "y":
+                        case "z":
+                        case "dx":
+                        case "dy":
+                        case "dz":
+                        case "r":
+                        case "rm":
+                        case "c":
+                        case "l":
+                        case "lm":
+                            if (strict && !canConvertNumber(ent.getValue()))
+                                return true;
+                            else if (!strict)
+                                return false;
+                            break;
+                        case "rx":
+                        case "rxm":
+                        case "ry":
+                        case "rym":
+                            if (strict && !canConvertDouble(ent.getValue()))
+                                return true;
+                            else if (!strict)
+                                return false;
+                            break;
+                    }
                     return false;
+                }
 
             Matcher matcher = scorePattern.matcher(ent.getKey());
 
@@ -102,15 +131,18 @@ public class EntitySelector
         return result;
     }
 
-
-    public static boolean isValidSelectorType(String token)
+    /**
+     * エンティティを選択
+     * @param sender コマンドを撃った人
+     * @param token セレクタ
+     * @param strict
+     * @return
+     * @throws SelectorInvalidException
+     * @throws SelectorMalformedException
+     */
+    public static List<Entity> matchEntities(CommandSender sender,  String token, boolean strict) throws SelectorInvalidException, SelectorMalformedException
     {
-        return tokenPattern.matcher(token).matches();
-    }
-
-    public static List<Entity> matchEntities(CommandSender sender,  String token, Class<? extends Entity> clazz) throws SelectorInvalidException, SelectorMalformedException
-    {
-        validateSelector(token);
+        validateSelector(token, strict);
 
         Matcher tokenMatcher = tokenPattern.matcher(token);
         if (!tokenMatcher.matches())
@@ -147,7 +179,7 @@ public class EntitySelector
             filtered.addAll(filterResults(keyMap, pres, dist, world, blockPos));
         }
 
-        return getEntitiesFromPredicates(filtered, keyMap, sender, clazz, dist, blockPos);
+        return getEntitiesFromPredicates(filtered, keyMap, sender, dist, blockPos);
     }
 
 
@@ -187,7 +219,7 @@ public class EntitySelector
     }
 
 
-    private static List<Entity> getEntitiesFromPredicates(List<Entity> match, Map<String, String> params, CommandSender sender, Class<? extends Entity> clazz, String type, Location blockPos)
+    private static List<Entity> getEntitiesFromPredicates(List<Entity> match, Map<String, String> params, CommandSender sender, String type, Location blockPos)
     {
         int count = convertStringToInt(params.get("c"), !type.equals("a") && !type.equals("e") ? 1: 0);
 
@@ -211,7 +243,7 @@ public class EntitySelector
         if (sender instanceof Player)
         {
             Entity commandSenderEntity = ((Player) sender);
-            if (clazz.isAssignableFrom(commandSenderEntity.getClass()) && count == 1 && match.contains(commandSenderEntity) && !type.equals("r"))
+            if (count == 1 && match.contains(commandSenderEntity) && !type.equals("r"))
                 match = new ArrayList<>(Collections.singletonList(commandSenderEntity));
         }
 
@@ -669,6 +701,19 @@ public class EntitySelector
             location.setZ(NumberConversions.floor(Double.parseDouble(map.get("z"))));
 
         return location;
+    }
+
+    private static boolean canConvertNumber(String str)
+    {
+        try
+        {
+            Long.parseLong(str);
+            return true;
+        }
+        catch (Exception ignored)
+        {
+            return false;
+        }
     }
 
     private static boolean canConvertDouble(String str)
