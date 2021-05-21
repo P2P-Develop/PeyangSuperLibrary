@@ -30,6 +30,9 @@ implementation 'tokyo.peya.lib:PeyangSuperLibrary:114.191.9.810'
 implementation("tokyo.peya.lib:PeyangSuperLibrary:114.191.9")
 ```
 
+# ドキュメント
++ [JavaDoc](https://lib.peya.tokyo/)
+
 # はいってるもの
 
 + EntitySelector  
