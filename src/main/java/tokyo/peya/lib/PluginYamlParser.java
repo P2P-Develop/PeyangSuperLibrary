@@ -17,34 +17,101 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+/**
+ * PluginYamlをPojoに変換します。
+ */
 @SuppressWarnings("unused")
 public class PluginYamlParser implements Serializable
 {
+    /**
+     * プラグインの名前。
+     */
     public String name;
+    /**
+     * プラグインのバージョン。
+     */
     public String version;
+    /**
+     * プラグインの概要。
+     */
     public String description;
+    /**
+     * プラグインの使用するAPIバージョン。
+     * 1.12以下のプラグインの場合は確定nullです。
+     */
     public String api_version;
+    /**
+     * プラグインの読み込みタイミング。
+     */
     public Load load;
+    /**
+     * プラグインの作成者。
+     */
     public String author;
+    /**
+     * プラグインの作成者(リスト)。
+     */
     public String[] authors;
+    /**
+     * プラグインのウェブサイト。
+     */
     public String website;
+    /**
+     * プラグインのメインクラス。
+     */
     public String main;
+    /**
+     * プラグインがデータベースを利用するか。
+     */
     public boolean databases;
-    public String prefixes;
+    /**
+     * プラグインのログ接頭辞。
+     */
+    public String prefix;
+    /**
+     * プラグインの依存先。
+     */
     public String[] depend;
+    /**
+     * 先に起動すべきプラグイン。
+     */
     public String[] softdepend;
+    /**
+     * 後に起動すべきプラグイン。
+     */
     public String[] loadbefore;
+    /**
+     * プラグインのコマンド一覧。
+     */
     public HashMap<String, Command> commands;
+    /**
+     * プラグインの権限一覧。
+     */
     public HashMap<String, Permission> permissions;
+    /**
+     * プラグインのコマンドのデフォルト権限。
+     */
     public Permission defaultPermission;
+
     @SerializedName("default-permission")
     private PrePermission defaultPrePermission;
 
+    /**
+     * Mapから変換
+     * @param map マップ
+     * @return 変換後
+     */
     public static PluginYamlParser fromMap(Map<String, Object> map)
     {
         return new PluginYamlParser().parse(map);
     }
 
+    /**
+     * plugin.yml等の Yamlファイルから変換。
+     * @param yaml Yamlファイル
+     * @return 変換後
+     * @throws IOException ファイルが見つからない
+     */
     public static PluginYamlParser fromYaml(File yaml) throws IOException
     {
         if (!yaml.exists())
@@ -57,6 +124,12 @@ public class PluginYamlParser implements Serializable
         }
     }
 
+    /**
+     * プラグインのJarファイル
+     * @param file jar
+     * @return 変換後
+     * @throws IOException ファイルが見つからない
+     */
     public static PluginYamlParser fromJar(File file) throws IOException
     {
         if (!file.exists())
@@ -157,38 +230,94 @@ public class PluginYamlParser implements Serializable
         return perm;
     }
 
+    /**
+     * 読み込みタイミング。
+     */
     public enum Load
     {
+        /**
+         * Bukkitスタート時に読み込み。
+         */
         STARTUP,
+        /**
+         * ワールド読み込み後に読み込み。
+         */
         POSTWORLD
     }
 
+    /**
+     * デフォルトの権限。
+     */
     public enum DefaultPermission
     {
+        /**
+         * OPを持つ人。
+         */
         OP,
+        /**
+         * OPを持たない人。
+         */
         NOTOP,
+        /**
+         * 権限なし。
+         */
         FALSE,
+        /**
+         * 権限あり。
+         */
         TRUE
     }
 
+    /**
+     * プラグインのコマンド。
+     */
     public static class Command implements Serializable
     {
+        /**
+         * コマンドの概要。
+         */
         public String description;
+        /**
+         * コマンドのエイリアス。
+         */
         public String[] aliases;
+        /**
+         * コマンドの権限。
+         */
         public String permission;
+        /**
+         * 権限がない場合のメッセージ。
+         */
         @SerializedName("permission-message")
         public String permissionMessage;
+        /**
+         * コマンドの使用法。
+         */
         public String usage;
     }
 
+    /**
+     * プラグインの権限。
+     */
     public static class Permission implements Serializable
     {
+        /**
+         * 権限の概要。
+         */
         public String description;
+        /**
+         * デフォルトの権限。
+         */
         public DefaultPermission defaultPermission;
+        /**
+         * 子権限。
+         * {@code Boolean}または{@code Permission}
+         */
         public HashMap<String, Object> children;
     }
 
-    public static class PrePermission extends Permission
+
+    private static class PrePermission extends Permission
     {
         @SerializedName("default")
         public String defaultPermission;

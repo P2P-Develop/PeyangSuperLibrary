@@ -58,3 +58,5 @@ implementation("tokyo.peya.lib:PeyangSuperLibrary:114.191.9")
   SQL文を書く必要なく、簡単にinsertとかできるようになる。
 + FileConfiguration  
   ymlファイルをコンフィグとして使えるようになる。
++ PluginYamlParser
+  Bukkitの`plugin.yml`をPojoに変換します。
