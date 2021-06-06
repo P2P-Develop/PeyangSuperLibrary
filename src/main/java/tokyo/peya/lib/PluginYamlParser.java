@@ -7,14 +7,17 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+@SuppressWarnings("unused")
 public class PluginYamlParser implements Serializable
 {
     public String name;
@@ -33,19 +36,34 @@ public class PluginYamlParser implements Serializable
     public String[] loadbefore;
     public HashMap<String, Command> commands;
     public HashMap<String, Permission> permissions;
+    public Permission defaultPermission;
     @SerializedName("default-permission")
     private PrePermission defaultPrePermission;
-    public Permission defaultPermission;
+
+    public static PluginYamlParser fromMap(Map<String, Object> map)
+    {
+        return new PluginYamlParser().parse(map);
+    }
+
+    public static PluginYamlParser fromYaml(File yaml) throws IOException
+    {
+        if (!yaml.exists())
+            throw new FileNotFoundException("plugin.yml not found.");
+
+        try (InputStream stream = new FileInputStream(yaml))
+        {
+            HashMap<String, Object> pluginYamlParser = new Yaml().load(stream);
+            return new PluginYamlParser().parse(pluginYamlParser);
+        }
+    }
 
     public static PluginYamlParser fromJar(File file) throws IOException
     {
         if (!file.exists())
-            throw new FileNotFoundException("plugin not found.");
-
+            throw new FileNotFoundException("Plugin file not found.");
 
         try (ZipFile zip = new ZipFile(file))
         {
-
             ZipEntry ent = zip.getEntry("plugin.yml");
 
             if (ent == null)
@@ -59,11 +77,9 @@ public class PluginYamlParser implements Serializable
         }
     }
 
-    public PluginYamlParser parse(HashMap<String, Object> kv)
+    private PluginYamlParser parse(Map<String, Object> kv)
     {
-
         PluginYamlParser pluginYamlParser = new Gson().fromJson(new Gson().toJson(kv), PluginYamlParser.class);
-
         pluginYamlParser.defaultPermission = flatLine(pluginYamlParser.defaultPrePermission);
 
         return flatLine(pluginYamlParser);
@@ -94,7 +110,7 @@ public class PluginYamlParser implements Serializable
         return newParser;
     }
 
-    public HashMap<String, Object> flatLine(HashMap<String, Object> children)
+    private HashMap<String, Object> flatLine(HashMap<String, Object> children)
     {
         if (children == null)
             return null;
@@ -116,7 +132,7 @@ public class PluginYamlParser implements Serializable
         return newChildren;
     }
 
-    public Permission flatLine(PrePermission permission)
+    private Permission flatLine(PrePermission permission)
     {
         if (permission == null)
             return null;
@@ -147,6 +163,14 @@ public class PluginYamlParser implements Serializable
         POSTWORLD
     }
 
+    public enum DefaultPermission
+    {
+        OP,
+        NOTOP,
+        FALSE,
+        TRUE
+    }
+
     public static class Command implements Serializable
     {
         public String description;
@@ -168,14 +192,6 @@ public class PluginYamlParser implements Serializable
     {
         @SerializedName("default")
         public String defaultPermission;
-    }
-
-    public enum DefaultPermission
-    {
-        OP,
-        NOTOP,
-        FALSE,
-        TRUE
     }
 }
 
