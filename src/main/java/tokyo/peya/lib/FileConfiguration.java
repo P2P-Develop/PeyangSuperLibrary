@@ -28,6 +28,7 @@ public class FileConfiguration
 
     /**
      * jarファイル内のconfig.ymlを保存
+     * @return 成功?
      */
     public boolean saveDefaultConfig()
     {
@@ -47,6 +48,7 @@ public class FileConfiguration
 
     /**
      * configを読み込む
+     * @return 成功?
      */
     public boolean loadConfig()
     {
@@ -55,11 +57,12 @@ public class FileConfiguration
 
     /**
      * 再読み込み
+     * @return 成功?
      */
     public boolean reloadConfig()
     {
         try (InputStream stream = new FileInputStream(cfg);
-            InputStreamReader reader = new InputStreamReader(stream))
+             InputStreamReader reader = new InputStreamReader(stream))
         {
             Yaml yaml = new Yaml();
             this.config = yaml.load(reader);
