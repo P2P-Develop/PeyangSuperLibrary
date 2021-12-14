@@ -21,13 +21,13 @@
 <dependency>
   <groupId>tokyo.peya.lib</groupId>
   <artifactId>PeyangSuperLibrary</artifactId>
-  <version>114.191.98.10</version>
+  <version>114.191.981.0</version>
 </dependency>
 ```
 + Gradle
 ```js
-implementation 'tokyo.peya.lib:PeyangSuperLibrary:114.191.98.10'
-implementation("tokyo.peya.lib:PeyangSuperLibrary:114.191.98.10")
+implementation 'tokyo.peya.lib:PeyangSuperLibrary:114.191.981.0'
+implementation("tokyo.peya.lib:PeyangSuperLibrary:114.191.981.0")
 ```
 
 # ドキュメント
