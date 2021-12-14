@@ -29,35 +29,45 @@ public class FileConfiguration
     /**
      * jarファイル内のconfig.ymlを保存
      */
-    public void saveDefaultConfig()
+    public boolean saveDefaultConfig()
     {
         if (cfg.exists())
-            return;
-        copyFromInJar(fileStr);
+            return true;
+
+        try
+        {
+            copyFromInJar(fileStr);
+            return true;
+        }
+        catch (IOException ignored)
+        {
+            return false;
+        }
     }
 
     /**
      * configを読み込む
      */
-    public void loadConfig()
+    public boolean loadConfig()
     {
-        reloadConfig();
+        return reloadConfig();
     }
 
     /**
      * 再読み込み
      */
-    public void reloadConfig()
+    public boolean reloadConfig()
     {
         try (InputStream stream = new FileInputStream(cfg);
             InputStreamReader reader = new InputStreamReader(stream))
         {
             Yaml yaml = new Yaml();
             this.config = yaml.load(reader);
+            return true;
         }
-        catch (Exception e)
+        catch (Exception ignored)
         {
-            e.printStackTrace();
+            return false;
         }
     }
 
@@ -68,7 +78,8 @@ public class FileConfiguration
     public Map<String, Object> getConfig()
     {
         if (config == null)
-            reloadConfig();
+            if (!loadConfig())
+                throw new NullPointerException("Failed to parsing yaml files");
 
         return this.config;
     }
@@ -113,24 +124,18 @@ public class FileConfiguration
 
     /**
      * stringでget
-     * @param key
-     * @return
+     * @param key キー
+     * @return string
      */
     public String getString(String key)
     {
         return get(key);
     }
 
-    private void copyFromInJar(String name)
+    private void copyFromInJar(String name) throws IOException
     {
-        try
-        {
-            Path to = cfg.toPath();
-            Files.copy(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(name)), to);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        Path to = cfg.toPath();
+        Files.copy(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(name)), to);
+
     }
 }
